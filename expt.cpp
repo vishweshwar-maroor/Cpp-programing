@@ -9,4 +9,5 @@ int main()
 {
    cout<<"hello";
    int x;
+   x=5;
 }
