@@ -1,0 +1,13 @@
+if(tempa!=0){
+        x=an+1;
+    }
+    else{
+        x=an;
+    }
+    if(bf-bn!=0){
+        y=bn+1;
+    }
+    else{
+        y=bn;
+    }
+    cout<<x*y<<tempa<<tempb;
