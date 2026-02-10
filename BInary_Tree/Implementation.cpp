@@ -26,9 +26,9 @@ node *buildTree(node *root)
         return NULL;
     }
 
-    cout << "Insert data for left node " << endl;
+    cout << "Insert data for left of "<< data << endl;
     root->left = buildTree(root->left);
-    cout << "Insert data for right node " << endl;
+    cout << "Insert data for right of "<<data << endl;
     root->right = buildTree(root->right);
     return root;
 }
