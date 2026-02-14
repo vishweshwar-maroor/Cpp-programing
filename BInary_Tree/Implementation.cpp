@@ -11,9 +11,9 @@ public:
     // constructor
     node(int d)
     {
-        this->data = d;
-        this->left = NULL;
-        this->right = NULL;
+        data = d;
+        left = NULL;
+        right = NULL;
     }
 };
 node* buildTree(node *root)
@@ -36,36 +36,29 @@ node* buildTree(node *root)
 }
 void levelOrderTraversal(node *root)
 {
-    queue<node *> q;
+    if(root==NULL) return;
+    queue<node*> q;
     q.push(root);
-    q.push(NULL);
-
-    while (!q.empty())
-    {
-        node *temp = q.front();
-
+    while(!q.empty()){
+        node* temp=q.front();
         q.pop();
-        if (temp == NULL)
-        {
-            cout << endl;
-            if (!q.empty())
-            {
+        if(temp==NULL){
+            cout<<endl;
+            if(!q.empty()){
                 q.push(NULL);
             }
         }
-        else
-        {
-            cout << (temp->data) << " ";
-            if (temp->left)
-            {
+        else{
+            cout<<temp->data;
+            if(temp->left!=nullptr){
                 q.push(temp->left);
             }
-            if (temp->right)
-            {
+            if(temp->right!=nullptr){
                 q.push(temp->right);
             }
         }
     }
+
 }
 int main()
 {
