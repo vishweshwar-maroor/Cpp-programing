@@ -1,0 +1,84 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+template <typename T>
+    class TreeNode
+    {
+    public:
+        T data;
+        TreeNode<T> *left;
+        TreeNode<T> *right;
+
+        TreeNode(T data)
+        {
+            this -> data = data;
+            left = NULL;
+            right = NULL;
+        }
+
+        ~TreeNode()
+        {
+            if(left)
+                delete left;
+            if(right)
+                delete right;
+        }
+    };
+
+
+void Traverseleft(TreeNode<int> *root,vector<int> &ans){
+    if((root==NULL)||(root->left==NULL&&root->right==NULL))
+    return ;
+    ans.push_back(root->data);
+    if(root->left){
+        Traverseleft(root->left,ans);
+    }
+    else{
+        Traverseleft(root->right,ans);
+    }
+}
+void inorder(TreeNode<int> *root,vector<int> &ans){
+    if(root==NULL){
+        return;
+    }
+    if(root->left==NULL&&root->right==NULL){
+        ans.push_back(root->data);
+        return;
+    }
+    //le
+    inorder(root->left,ans);
+    //right
+    inorder(root->right,ans);
+}
+void Traverseright(TreeNode<int> *root,vector<int> &ans){
+    if((root==NULL)||(root->left==NULL&&root->right==NULL)) return ;
+    
+    if(root->left){
+        Traverseright(root->left,ans);
+        ans.push_back(root->data);
+    }
+    else{
+        Traverseright(root->right,ans);
+        ans.push_back(root->data);
+    }
+}
+
+
+vector<int> traverseBoundary(TreeNode<int> *root)
+{
+	// Write your code here.
+    vector<int> ans;
+    if(root==NULL)return ans;
+    ans.push_back(root->data);
+    //left
+    Traverseleft(root->left,ans);
+    inorder(root,ans);
+    Traverseright(root->right,ans);
+    return ans;
+
+
+}
+
+int main(){
+    
+}
