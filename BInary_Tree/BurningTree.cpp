@@ -15,67 +15,72 @@ void nodeToParent(Node* root,map<Node*,Node*> &nodetoParent){
     if(root==NULL){
         return;
     }
-    nodetoParent.insert({root->left,root});
-    nodetoParent.insert({root->right,root});
-    nodeToParent(root->left,nodetoParent);
-    nodeToParent(root->right,nodetoParent);
-    
+    queue<Node*> q;
+    q.push(root);
+    nodetoParent[root]=NULL;
+    while(!q.empty()){
+        Node* current=q.front();
+        q.pop();
+        if(current->left){
+            nodetoParent[current->left]=current;
+            q.push(current->left);
+        }
+        if(current->right){
+            nodetoParent[current->right]=current;
+            q.push(current->right);
+        }
+    }
 }
 Node* findNode(Node* root,int target){
+    if(root==NULL) return NULL;
     if(root->data==target){
         return root;
     }
-    if(root==NULL) return NULL;
     Node* left=findNode(root->left,target);
-    Node* right=findNode(root->right,target);
     if(left!=NULL) return left;
-    else if(right!=NULL) return right;
-    else {
-        return NULL;
-    }
-
-
+    return findNode(root->right,target);
 }
-void caltime(Node* &target,map<Node*,bool> &visited,int &time,map<Node*,Node*> &nodetoParent){
+void caltime(Node* target,map<Node*,bool> &visited,int &time,map<Node*,Node*> &nodetoParent){
+    if(target==NULL) return;
     queue<Node*> q;
     q.push(target);
     visited[target]=true;
-    
     while(!q.empty()){
-        int initialzSize=q.size();
-        if(target->left!=NULL&&visited[target->left]!=true){
-            q.push(target->left);
-            visited[target->left]=true;
-        }
-        if(target->right!=NULL&&visited[target->right]!=true){
-            q.push(target->right);
-            visited[target->right]=true;
-            
-        }
-        if(nodetoParent[target]!=NULL&&visited[nodetoParent[target]]!=true){
-            q.push(nodetoParent[target]);
-            visited[nodetoParent[target]]=true;
-        }
-        int finalSize=q.size();
-        if(finalSize!=initialzSize) time++;
+        int levelSize=q.size();
+        bool burned=false;
         
+        for(int i=0;i<levelSize;i++){
+            Node* current=q.front();
+            q.pop();
+            if(current->left && !visited[current->left]){
+                visited[current->left]=true;
+                q.push(current->left);
+                burned=true;
+            }
+            if(current->right && !visited[current->right]){
+                visited[current->right]=true;
+                q.push(current->right);
+                burned=true;
+            }
+            Node* parent=nodetoParent[current];
+            if(parent && !visited[parent]){
+                visited[parent]=true;
+                q.push(parent);
+                burned=true;
+            }
+        }
+        if(burned) time++;
     }
 }
 int minTime(Node* root, int target){
-    //mapping parent to node
+    if(root==NULL) return 0;
     map<Node*,Node*> nodetoParent;
-    nodetoParent.insert({NULL,root});
     nodeToParent(root,nodetoParent);
-    //firn traget node
     Node* targetPos=findNode(root,target);
-
-    //calculating time
+    if(targetPos==NULL) return 0;
     map<Node*,bool> visited;
-    queue<Node*> q;
     int time=0;
     caltime(targetPos,visited,time,nodetoParent);
     return time;
-
-
 }
 int main(){}
