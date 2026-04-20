@@ -24,19 +24,18 @@ void inorder(TreeNode *root, vector<int> &v)
     // r
     inorder(root->right, v);
 }
-void formBST(TreeNode *root, vector<int> &v, int start, int end)
-{
-    // basecase
-    if (start >= end)
-    {
-        return;
-    }
-    int mid=(start + end) / 2;
-    root = new TreeNode(v[mid]);
+TreeNode* formBST(vector<int>& v, int start, int end) {
+        // basecase
+        if (start > end) {
+            return NULL;
+        }
+        int mid = start+(end-start)/2 ;
+        TreeNode* root = new TreeNode(v[mid]);
 
-    formBST(root->left, v, start, mid);
-    formBST(root->right, v, mid + 1, end);
-}
+        root->left = formBST(v, start, mid-1);
+        root->right = formBST(v, mid+1 , end);
+        return root;
+    }
 TreeNode *balanceBST(TreeNode *root)
 {
     vector<int> v;
