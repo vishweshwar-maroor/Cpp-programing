@@ -1,24 +1,29 @@
 from airllm import AutoModel
 
-# Load the model (e.g., Llama-3-8B or 70B)
+MAX_LENGTH = 128
+
 model = AutoModel.from_pretrained("garage-bAInd/Platypus2-70B-instruct")
 
-# Prepare input
-input_text = "What is the capital of China?"
-input_tokens = model.tokenizer(
-    [input_text],
-    return_tokens="pt",
-    truncation=True,
-    max_length=128
-)
 
-# Generate output
+
+input_text = [
+        'What is the capital of United States?',
+        
+    ]
+
+input_tokens = model.tokenizer(input_text,
+    return_tensors="pt", 
+    return_attention_mask=False, 
+    truncation=True, 
+    max_length=MAX_LENGTH, 
+    padding=False)
+           
 generation_output = model.generate(
-    input_tokens['input_ids'].cuda(),
+    input_tokens['input_ids'].cuda(), 
     max_new_tokens=20,
-    use_cache=True
-)
+    use_cache=True,
+    return_dict_in_generate=True)
 
-# Decode output
-output = model.tokenizer.batch_decode(generation_output)
+output = model.tokenizer.decode(generation_output.sequences[0])
+
 print(output)
