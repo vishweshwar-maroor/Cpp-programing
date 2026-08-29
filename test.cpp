@@ -1,8 +1,9 @@
 #include<iostream>
+#include<unordered_map>
 using namespace std;
 int main(){
     
-    for(int i=2012;i<2026;i++){
-        cout<<i<<"-"<<i+1<<endl;
-    }
+    unordered_map<int,bool> mp;
+    mp[5]=true;
+    cout<<mp[5];
 }
