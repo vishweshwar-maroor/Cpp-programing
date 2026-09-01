@@ -1,6 +1,6 @@
 #include<iostream>
 #include<queue>
-#include<sta
+#include<staack>
 
 using namespace std;
 class node{
