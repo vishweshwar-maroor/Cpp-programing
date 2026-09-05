@@ -8,85 +8,76 @@ Output: [0, 2, 1, -1]
 Explanation: Shortest path from 0 to 1 is 0->1 with edge weight 2. Shortest path from 0 to 2 is 0->2 with edge weight 1. There is no way we can reach 3, so it's -1 for 3.
 */
 #include <iostream>
-
+#include <unordered_map>
 #include <vector>
 #include <queue>
+#include <stack>
 using namespace std;
 class Solution
 {
 public:
-    void bfs(vector<vector<pair<int, int>>> &adj, int node, vector<int> &parent, vector<bool> &visited)
+    void dfs(int node, vector<vector<int>> &adj, stack<int> &st, vector<bool> &visited)
     {
-        queue<int> q;
-        q.push(node);
-        parent[node] = -1;
-        while (!q.empty())
+        visited[node] = true;
+        for (auto a : adj[node])
         {
-            int front = q.front();
-            visited[front] = true;
-            q.pop();
-            for (auto a : adj[front])
+            if (!visited[a])
             {
-                if (!visited[a.first])
-                {
-                    q.push(a.first);
-                    if (parent[a.first] == -2)
-                    {
-                        parent[a.first] = front;
-                    }
-                }
+                dfs(a, adj, st, visited);
             }
         }
+        st.push(node);
     }
-    void makeAns(vector<int> &ans, vector<int> &parent, vector<vector<pair<int, int>>> &adj, int end)
+    void topoSort(vector<vector<int>> &adj, vector<int> &topoSortResult, vector<bool> &visited, int V)
     {
-        int temp = end;
-        while (1)
+        stack<int> st;
+        for (int i = 0; i < V; i++)
         {
-            if (parent[temp] == -2)
+            if (!visited[i])
             {
-                ans[temp] = -1;
-                break;
+                dfs(i, adj, st, visited);
             }
-            if (temp == 0)
-            {
-                break;
-            }
-            int child = temp;
-            temp = parent[temp];
-            int weight;
-            for (auto a : adj[temp])
-            {
-                if (a.first == child)
-                {
-                    weight = a.second;
-                    break;
-                }
-            }
-            ans[end] += weight;
+        }
+        for (!st.empty())
+        {
+            topoSortResult.push_back(st.top());
+            st.pop();
+        }
+    }
+    void makeAdj(vector<vector<int>> &adj, vector<vector<int>> &edges, int V, unordered_map<pair<int, int>,int> &weight)
+    {
+        for (auto a : edges)
+        {
+            weight.insert({a[0], a[1]}, a[2]);
+            adj[a[0]].push_back([a[1]]);
         }
     }
     vector<int> shortestPath(int V, vector<vector<int>> &edges)
     {
-        // code here
-        int n = V;
-        vector<vector<pair<int, int>>> adj(n);
-        queue<int> q;
-        vector<bool> visited(n, false);
-        vector<int> parent(n, -2);
-        for (auto a : edges)
-        {
-            int u = a[0];
-            int v = a[1];
-            adj[u].push_back({v, a[3]});
-        }
-
-        bfs(adj, 0, parent, visited);
-        vector<int> ans(n, 0);
+        unordered_map<pair<int, int>, , int> weight;
+        vector<vector<int>> adj(V);
+        vector<bool> visited(V, false);
+        makeAdj(adj,edges,V,weight);
+        vector<int> topoSortResult;
+        topoSort(adj, topoSortResult, visited, V);
+        vector<int> ans(V, INT_MAX);
         ans[0] = 0;
-        for (int i = 1; i < n; i++)
+        for (auto a : topoSortResult)
         {
-            makeAns(ans, parent, adj, i);
+            if (ans[a] == INT_MAX)
+            {
+                continue;
+            }
+            else
+            {
+                for (auto b : adj[a])
+                {
+                    if (ans[b] > ans[a] + weight[{a, b}])
+                    {
+                        ans[b] = ans[a] + weight[{a, b}];
+                    }
+                }
+            }
         }
         return ans;
     }
