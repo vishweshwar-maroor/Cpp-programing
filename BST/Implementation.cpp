@@ -1,5 +1,5 @@
 #include <iostream>
-using namespacestd;
+using namespace std;
 class Node
 {
 private:
@@ -15,9 +15,9 @@ public:
     };
 };
 // Deletion
-Node* minVal(Node* root){
+Node* minVal(Node* &root){
     Node* temp=root;
-    while(temp->left!NULL){
+    while(temp->left!=NULL){
         temp=temp->left;
     }
     return temp;
@@ -123,7 +123,7 @@ void ImplementBST(Node *&root, int data)
     }
     while (temp != NULL)
     {
-        if (temp->data > data)
+        if (temp->data < data)
         {
             if (temp->right == NULL)
             {
@@ -135,7 +135,7 @@ void ImplementBST(Node *&root, int data)
                 temp = temp->right;
             }
         }
-        if (temp->data < data)
+        if (temp->data > data)
         {
             if (temp->left == NULL)
             {
@@ -147,6 +147,9 @@ void ImplementBST(Node *&root, int data)
                 temp = temp->left;
             }
         }
+        if(temp->data==data){
+            return;
+        }
     }
     return;
 }
@@ -156,9 +159,15 @@ void takeInput(Node *&root)
     cin >> x;
     while (x != -1)
     {
-        ImplementBST(root, data);
+        ImplementBST(root, x);
         cin >> x;
     }
+}
+void inorder(Node* &root){
+    if(root==NULL) return;
+    inorder(root->left);
+    cout<<root->data<<" ";
+    inorder(root->right);
 }
 
 int main()
@@ -166,4 +175,7 @@ int main()
     Node *root = NULL;
     cout << "Enter data: ";
     takeInput(root);
+    
+    inorder(root);
+
 }
